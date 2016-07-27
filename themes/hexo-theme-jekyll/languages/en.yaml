@@ -1,0 +1,17 @@
+index:
+    title: Home
+
+archive:
+    title: Blog
+
+rss:
+    title: rss
+
+github:
+    title: github
+
+excerpt_link:
+    title: MORE
+
+format:
+    date: "dddd, MMMM Do YYYY"

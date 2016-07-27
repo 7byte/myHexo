@@ -1,0 +1,20 @@
+doctype
+html(lang=config.language)
+    head
+        include ../_components/head
+    body
+        header.row-flex-row.limit-width.vh-center
+            a(href=url_for()).logo
+                img(src=url_for('favicon.png'))
+            include ../_components/nav
+        .container.limit-width
+            section.row-flex-row
+                block content
+        .extra
+            block extra
+                
+        footer.footer
+            .row-flex-row.limit-width.vh-center
+                include ../_components/footer
+        include ../_partial/scripts
+        //include ../_partial/comment

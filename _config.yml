@@ -6,7 +6,7 @@
 title: 7byte
 subtitle: 一条道走到黑
 description:
-author: 张治骐
+author: 7byte
 language: zh-CN
 timezone:
 
@@ -63,7 +63,9 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-jekyll
+theme: jacman
+
+disqus_shortname: 7bytegithubio
 
 feed: 
   type: atom

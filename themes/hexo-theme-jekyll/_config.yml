@@ -1,0 +1,16 @@
+menu:
+    home: /
+    blog: /archives/
+    rss: /atom.xml
+    github: https://github.com/7byte/7byte.github.com
+
+favicon: /favicon.png
+
+google_analytics: UA-65933410-1
+baidu_analytics: //hm.baidu.com/hm.js?a36e15d9e2adec9a21fcdd9f686b1ed2
+
+selfIntro:
+    title: 7byte
+    content: 骐骥一跃，不能十步；驽马十驾，功在不舍。
+    social:
+        github: https://github.com/7byte

@@ -1,0 +1,20 @@
+section.selfintro
+    .wrap.row-flex.row-flex-row.limit-width
+        .sign
+            img(src="img/github.png", alt="")
+        .intro
+            if theme.selfIntro.title
+                h3.title
+                    != theme.selfIntro.title
+            else 
+                h3.title Lorem ipsum dolor sit
+            if theme.selfIntro.content
+                p.content 
+                    != theme.selfIntro.content
+            else 
+                p.content Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur iure hic, ea deleniti, distinctio laudantium.
+            
+            ul.contact
+                each value, key in theme.selfIntro.social
+                    li
+                        a.social-link(href=value)!= key
