@@ -46,6 +46,7 @@ highlight:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  搭建个人博客: myBlog
 tag_map:
 
 # Date / Time format
