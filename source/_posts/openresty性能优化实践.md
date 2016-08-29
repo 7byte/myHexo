@@ -192,7 +192,87 @@ Hello, world!
 访问 http://127.0.0.1 返回了“Hello, world!”，搭建完成。
 
 ## 火焰图
-（待完善）
+首先需要安装内核开发包和调试包
+查看当前系统的内核版本
+```
+$ uname -r
+3.10.0-327.28.2.el7.x86_64
+```
+然后进入 http://debuginfo.centos.org/ ，可以看到有 4/ 5/ 6/ 7/ 这样的目录，这些目录分别对应了centos系统的大版本。找到并下载自己的系统内核版本对应的包
+```
+$ wget "http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-($version).rpm"
+$ wget "http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-($version).rpm"
+```
+安装
+```
+$ sudo rpm -ivh kernel-debuginfo-common-($version).rpm
+$ sudo rpm -ivh kernel-debuginfo-($version).rpm
+$ sudo yum install kernel-devel-($version)
+$ sudo yum install systemtap
+```
+下载火焰图绘制相关工具
+```
+$ git clone https://github.com/openresty/nginx-systemtap-toolkit.git
+$ git clone https://github.com/brendangregg/FlameGraph.git
+```
+然后测试下有没有安装成功
+```
+$ ps -ef | grep nginx
+root      1580     1  0 11:36 ?        00:00:00 nginx: master process /usr/local/openresty/nginx/sbin/nginx -c /home/7byte/openresty-test/conf/nginx.conf
+nobody   14489  1580  0 13:46 ?        00:00:00 nginx: worker process
+
+$ mkdir svg
+$ sudo nginx-systemtap-toolkit/./sample-bt -p 14489 -t 20 -u > svg/a.bt
+WARNING: Tracing 14489 (/usr/local/openresty/nginx/sbin/nginx) in user-space only...
+WARNING: Time's up. Quitting now...(it may take a while)
+```
+查看worker进程的PID=14489，sample-bt 参数 -p 表示要抓取的进程id，-t是探测的时间，单位是秒，探测结果输出到 a.bt
+```
+$ FlameGraph/stackcollapse-stap.pl svg/tmp.bt > svg/a.cbt
+$ FlameGraph/flamegraph.pl svg/a.cbt > svg/a.svg
+```
+最后生成的 a.svg 就是火焰图，用浏览器打开即可。
+遇到的问题：
+```
+$ sudo nginx-systemtap-toolkit/./ngx-sample-lua-bt -p 2039 --luajit20 -t 5 > svg/a.bt
+WARNING: cannot find module /usr/local/openresty/luajit/lib/libluajit-5.1.so.2.1.0 debuginfo: No DWARF information found [man warning::debuginfo]
+WARNING: Bad $context variable being substituted with literal 0: identifier '$L' at <input>:17:30
+ source:         lua_states[my_pid] = $L
+                                      ^
+semantic error: type definition 'TValue' not found in '/usr/local/openresty/luajit/lib/libluajit-5.1.so.2.1.0': operator '@cast' at :62:12
+        source:     return @cast(tvalue, "TValue", "/usr/local/openresty/luajit/lib/libluajit-5.1.so.2.1.0")->fr->tp->ftsz
+                           ^
+
+Pass 2: analysis failed.  [man error::pass2]
+Number of similar warning messages suppressed: 100.
+Rerun with -v to see them.
+```
+在使用 ngx-sample-lua-bt 探测lua级别的火焰图时遇到了失败的情况，从错误信息来看是找不到 DWARF 调试信息。查找官网资料，貌似在很早以前 openresty 自带的 LuaJIT 2.0 默认就会启用 DWARF 调试信息，那我用的最新版怎么就是没有调试信息呢？折腾了好久，最后我到 luajit 官网下载了当前 openresty 版本对应的 luajit 源码，然后编译
+```
+$ make CCDEBUG=-g -B -j8
+```
+备份然后替换 /usr/local/openresty/luajit 目录下的两个文件
+```
+$ cd /usr/local/openresty/luajit/bin/
+$ sudo cp luajit-2.1.0-beta2 luajit-2.1.0-beta2_20160829
+$ sudo cp ~/LuaJIT-2.1.0-beta2/src/luajit/luajit-2.1.0-beta2
+
+$ cd /usr/local/openresty/luajit/lib/
+$ sudo cp libluajit-5.1.so.2.1.0 libluajit-5.1.so.2.1.0_20160829
+$ sudo cp ~/LuaJIT-2.1.0-beta2/src/libluajit.so libluajit-5.1.so.2.1.0
+```
+重启 openresty-test 然后再试下，没有报错了
+```
+$ sudo nginx-systemtap-toolkit/./ngx-sample-lua-bt -p 2834 --luajit20 -t 20 > svg/a.bt
+WARNING: missing unwind/symbol data for module 'kernel'
+WARNING: Tracing 2836 (/usr/local/openresty/nginx/sbin/nginx) for LuaJIT 2.0...
+WARNING: Time's up. Quitting now...
+```
+对输出文件 a.bt 的后续处理与上文基本相同。另外可以预处理一下输出文件，增强可读性：
+```
+$ nginx-systemtap-toolkit/./fix-lua-bt svg/a.bt > svg/tmp.bt
+```
+
 ## wrk压测
 [wrk][3]是一个开源的http性能测试工具，项目在github维护
 wrk的使用非常简单，首先需要已经安装了git，gcc这两个基础工具，然后依次执行下面的3个命令：
