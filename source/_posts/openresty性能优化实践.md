@@ -35,7 +35,7 @@ $ sudo yum install openresty
 
 ### 创建自己的应用目录
 为了避免污染/usr/local/openresty/下的OpenResty安装内容，我们最好创建自己的工作目录：
-```
+``` shell
 $ mkdir /home/7byte/openresty-test /home/7byte/openresty-test/logs/ /home/7byte/openresty-test/conf/
 ```
 在刚刚创建的 /home/7byte/openresty-test/conf/ 目录下新建配置文件nginx.conf，可以从安装目录拷贝一份过来：
@@ -66,7 +66,7 @@ http {
 }
 ```
 为了能够使用service对openresty-test执行start、stop、reload等操作，我们还需要在 /etc/init.d/ 目录下创建一个启动脚本openresty-test，内容参考默认的 /etc/init.d/openresty
-```
+``` shell
 #!/bin/sh
 #
 # openresty - this script starts and stops the nginx daemon of OpenResty
@@ -180,12 +180,12 @@ case "$1" in
 esac
 ```
 保存退出后，下一步启动openresty-test。需要注意的是，如果开启了防火墙，需要放开nginx默认监听的80端口，或是其它自定义的端口
-```
+``` shell
 $ sudo service openresty-test start
 Starting openresty-test (via systemctl):                   [  OK  ]
 ```
 看到上面的结果，说明启动成功了。然后通过curl在试着访问一下
-```
+``` shell
 $ curl http://127.0.0.1
 Hello, world!
 ```
@@ -194,29 +194,29 @@ Hello, world!
 ## 火焰图
 首先需要安装内核开发包和调试包
 查看当前系统的内核版本
-```
+``` shell
 $ uname -r
 3.10.0-327.28.2.el7.x86_64
 ```
 然后进入 http://debuginfo.centos.org/ ，可以看到有 4/ 5/ 6/ 7/ 这样的目录，这些目录分别对应了centos系统的大版本。找到并下载自己的系统内核版本对应的包
-```
+``` shell
 $ wget "http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-($version).rpm"
 $ wget "http://debuginfo.centos.org/7/x86_64/kernel-debuginfo-common-($version).rpm"
 ```
 安装
-```
+``` shell
 $ sudo rpm -ivh kernel-debuginfo-common-($version).rpm
 $ sudo rpm -ivh kernel-debuginfo-($version).rpm
 $ sudo yum install kernel-devel-($version)
 $ sudo yum install systemtap
 ```
 下载火焰图绘制相关工具
-```
+``` shell
 $ git clone https://github.com/openresty/nginx-systemtap-toolkit.git
 $ git clone https://github.com/brendangregg/FlameGraph.git
 ```
 然后测试下有没有安装成功
-```
+``` shell
 $ ps -ef | grep nginx
 root      1580     1  0 11:36 ?        00:00:00 nginx: master process /usr/local/openresty/nginx/sbin/nginx -c /home/7byte/openresty-test/conf/nginx.conf
 nobody   14489  1580  0 13:46 ?        00:00:00 nginx: worker process
@@ -227,13 +227,13 @@ WARNING: Tracing 14489 (/usr/local/openresty/nginx/sbin/nginx) in user-space onl
 WARNING: Time's up. Quitting now...(it may take a while)
 ```
 查看worker进程的PID=14489，sample-bt 参数 -p 表示要抓取的进程id，-t是探测的时间，单位是秒，探测结果输出到 a.bt
-```
+``` shell
 $ FlameGraph/stackcollapse-stap.pl svg/tmp.bt > svg/a.cbt
 $ FlameGraph/flamegraph.pl svg/a.cbt > svg/a.svg
 ```
 最后生成的 a.svg 就是火焰图，用浏览器打开即可。
 遇到的问题：
-```
+``` shell
 $ sudo nginx-systemtap-toolkit/./ngx-sample-lua-bt -p 2039 --luajit20 -t 5 > svg/a.bt
 WARNING: cannot find module /usr/local/openresty/luajit/lib/libluajit-5.1.so.2.1.0 debuginfo: No DWARF information found [man warning::debuginfo]
 WARNING: Bad $context variable being substituted with literal 0: identifier '$L' at <input>:17:30
@@ -248,11 +248,11 @@ Number of similar warning messages suppressed: 100.
 Rerun with -v to see them.
 ```
 在使用 ngx-sample-lua-bt 探测lua级别的火焰图时遇到了失败的情况，从错误信息来看是找不到 DWARF 调试信息。查找官网资料，貌似在很早以前 openresty 自带的 LuaJIT 2.0 默认就会启用 DWARF 调试信息，那我用的最新版怎么就是没有调试信息呢？折腾了好久，最后我到 luajit 官网下载了当前 openresty 版本对应的 luajit 源码，然后编译
-```
+``` shell
 $ make CCDEBUG=-g -B -j8
 ```
 备份然后替换 /usr/local/openresty/luajit 目录下的两个文件
-```
+``` shell
 $ cd /usr/local/openresty/luajit/bin/
 $ sudo cp luajit-2.1.0-beta2 luajit-2.1.0-beta2_20160829
 $ sudo cp ~/LuaJIT-2.1.0-beta2/src/luajit/luajit-2.1.0-beta2
@@ -262,14 +262,14 @@ $ sudo cp libluajit-5.1.so.2.1.0 libluajit-5.1.so.2.1.0_20160829
 $ sudo cp ~/LuaJIT-2.1.0-beta2/src/libluajit.so libluajit-5.1.so.2.1.0
 ```
 重启 openresty-test 然后再试下，没有报错了
-```
+``` shell
 $ sudo nginx-systemtap-toolkit/./ngx-sample-lua-bt -p 2834 --luajit20 -t 20 > svg/a.bt
 WARNING: missing unwind/symbol data for module 'kernel'
 WARNING: Tracing 2836 (/usr/local/openresty/nginx/sbin/nginx) for LuaJIT 2.0...
 WARNING: Time's up. Quitting now...
 ```
 对输出文件 a.bt 的后续处理与上文基本相同。另外可以预处理一下输出文件，增强可读性：
-```
+``` shell
 $ nginx-systemtap-toolkit/./fix-lua-bt svg/a.bt > svg/tmp.bt
 ```
 
@@ -283,7 +283,7 @@ $ make
 ```
 编译成功会在目录下生成执行文件wrk，准备工作完成。
 参考github上给出的例子，做一下简单的使用说明。
-``` 
+```  shell
 $ wrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html
 ```
 -t 使用的线程个数
@@ -373,7 +373,7 @@ else
 end
 ```
 本机压测结果：
-```
+``` shell
 $ ./wrk -t10 -d30s -c200 http://127.0.0.1/testMysql
 Running 30s test @ http://127.0.0.1/testMysql
   10 threads and 200 connections
@@ -391,7 +391,7 @@ Transfer/sec:     63.71MB
 根据官网文档说明，通过开启nginx gzip压缩，数据传输量可以减少一半甚至更多。在网络带宽成为瓶颈的情况下，gzip带来的提升无疑是相当有诱惑力的。
 
 **未开启gzip：**
-```
+``` shell
 $ ./wrk -t10 -c200 -d30s http://120.25.176.131/testMysql
 Running 30s test @ http://120.25.176.131/testMysql
   10 threads and 200 connections
@@ -413,7 +413,7 @@ gzip_proxied    expired no-cache no-store private auth;
 gzip_types      text/plain application/xml;
 ```
 压测结果
-```
+``` shell
 $ ./wrk -t10 -c200 -d30s http://120.25.176.131/testMysql
 Running 30s test @ http://120.25.176.131/testMysql
   10 threads and 200 connections
