@@ -36,11 +36,11 @@ $ sudo yum install openresty
 ### 创建自己的应用目录
 为了避免污染/usr/local/openresty/下的OpenResty安装内容，我们最好创建自己的工作目录：
 ``` shell
-$ mkdir /home/7byte/openresty-test /home/7byte/openresty-test/logs/ /home/7byte/openresty-test/conf/
+$ mkdir ~/openresty-test ~/openresty-test/logs/ ~/openresty-test/conf/
 ```
-在刚刚创建的 /home/7byte/openresty-test/conf/ 目录下新建配置文件nginx.conf，可以从安装目录拷贝一份过来：
+在刚刚创建的 ~/openresty-test/conf/ 目录下新建配置文件nginx.conf，可以从安装目录拷贝一份过来：
 ``` shell
-$ cp /usr/local/openresty/nginx/conf/nginx.conf /home/7byte/openresty-test/conf/
+$ cp /usr/local/openresty/nginx/conf/nginx.conf ~/openresty-test/conf/
 ```
 修改nginx.conf，返回经典的“Hello, world!”
 ```
