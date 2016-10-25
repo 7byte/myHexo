@@ -5,7 +5,7 @@
 # Site
 title: 7byte
 subtitle: 骐骥一跃，不能十步；驽马十驾，功在不舍
-description:
+description: 骐骥一跃，不能十步；驽马十驾，功在不舍
 author: 7byte
 language: zh-CN
 timezone:
@@ -69,10 +69,10 @@ theme: jacman
 
 disqus_shortname: 7bytegithubio
 
-feed: 
-  type: atom
-  path: atom.xml
-  limit: 20
+#feed: 
+  #type: atom
+  #path: atom.xml
+  #limit: 20
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
