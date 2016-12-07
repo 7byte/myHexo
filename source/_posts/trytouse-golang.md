@@ -57,5 +57,42 @@ Windows环境下golang环境搭建和Linux类似，官网上提供了msi安装�
 同样的，我们需要添加自己的工作目录。在环境变量中添加GOPATH，变量值即工作目录，例如 E:\GOPATH。
 验证安装的方式与Linux中相同，参考上一小节第5条。
 
+## 测试工具GoConvey
+完善的测试用例对提高代码质量的帮助不言而喻，在github上随手翻几个golang开源项目，可以发现每一个项目都带有详细的测试用例，可见为自己的golang代码写测试case已经是一项约定俗成的圈内规范。Go语言中自带有一个轻量级的测试框架testing和自带的go test命令来实现单元测试。但是go test的结果不够直观，并且每次都要手动敲命令也比较麻烦，所以我用到了[GoConvey][3]这个开源测试工具。
+GoConvey使用起来非常简单：
+```
+$ go get github.com/smartystreets/goconvey
+$ $GOPATH/bin/goconvey
+```
+然后在浏览器打开http://127.0.0.1:8080/ ，就能看到当前工程目录下所有*_test.go的测试情况了。
+添加一个测试文件helloworld_test.go
+``` go
+package main
+
+import (
+    "fmt"
+    "testing"
+)
+
+func TestHello(t *testing.T) {
+    fmt.Println("test OK!")
+}
+
+```
+保存之后可以看到浏览器页面几秒后自动刷新，测试通过效果图：
+![](/images/20161207214519.png)
+
+修改TestHello的代码：
+``` go
+func TestHello(t *testing.T) {
+    fmt.Println("test OK?")
+    t.Error("test not OK!")
+}
+```
+再次刷新后测试不通过：
+![](/images/20161207220023.png)
+
+
   [1]: https://golang.org/doc/install
   [2]: https://golang.org/dl/
+  [3]: http://goconvey.co/
