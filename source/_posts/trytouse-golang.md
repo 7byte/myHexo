@@ -21,7 +21,7 @@ $ wget https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz
 ```
 $ sudo tar -C /usr/local -xzf go1.7.3.linux-amd64.tar.gz
 ```
-3. 将 /usr/local/go/bin 添加到PATH环境变量，将此行添加到你的 /etc/profile（全系统安装）或 $HOME/.profile 文件中：
+3. 将 /usr/local/go/bin 添加到PATH环境变量，将此行添加到你的 /etc/profile（全系统安装）或 $HOME/.bash_profile 文件中：
 ```
 export PATH=$PATH:/usr/local/go/bin
 ```
@@ -29,25 +29,31 @@ export PATH=$PATH:/usr/local/go/bin
 ```
 $ source /etc/profile
 ```
-4. 添加自己的工作目录，将此行添加到 $HOME/.profile 文件中：
+4. 添加自己的工作目录，将此行添加到 $HOME/.bash_profile 文件中：
 ```
-export GOPATH=$HOME/gowork
+GOPATH=/home/7byte/code/gowork
+GOBIN=$GOPATH/bin
+PATH=$PATH:$GOBIN
+
+export GOPATH
+export GOBIN
+export PATH
 ```
    同样的让新添加的配置生效，gowork目录如果不存在则创建：
 ```
 $ mkdir $HOME/gowork
-$ source $HOME/.profile
+$ source $HOME/.bash_profile
 ```
 5. 验证安装。使用`go env`命令查看golang环境：
 ```
 $ go env
 GOARCH="amd64"
-GOBIN=""
+GOBIN="/home/7byte/code/gowork/bin"
 GOEXE=""
 GOHOSTARCH="amd64"
 GOHOSTOS="linux"
 GOOS="linux"
-GOPATH="/home/7byte/gowork"
+GOPATH="/home/7byte/code/gowork"
 GORACE=""
 GOROOT="/usr/lib/golang"
 GOTOOLDIR="/usr/lib/golang/pkg/tool/linux_amd64"
