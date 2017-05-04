@@ -14,12 +14,12 @@ menu:
 
 #### Widgets
 widgets: 
-- github-card
+# - github-card
 - category
 - tag
 - links
 #- douban
-- rss
+#- rss
 #- weibo
   ## provide eight widgets:github-card,category,tag,rss,archive,tagcloud,links,weibo
 
@@ -86,8 +86,8 @@ links:
   #码农圈: https://coderq.com,一个面向程序员交流分享的新一代社区
   #Jark's Blog: http://wuchong.me
   #shadowsocks: http://7bytes.xyz/ss-panel-2/
-  Github of 7byte: https://github.com/7byte
-
+  GitHub of 7byte: https://github.com/7byte
+  程序猿也玩摄影: http://zzhangzhiqi.lofter.com
 
 #### Comment
 duoshuo_shortname:    ## e.g. wuchong   your duoshuo short name.
