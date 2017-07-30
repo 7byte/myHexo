@@ -170,5 +170,49 @@ message Test3 {
 
 可以看到，最后三个字节与第一个例子中的完全相同（`08 96 01`）。在它们前面是数字3——嵌套消息与字符串（wire type = 2）的处理方式完全相同。
 
-## 可选和重复元素
+## 可选和repeated元素
+
+如果一个proto2消息定义了`repeated`元素（没有设置`[packed]=true`），那么编码后的消息会有0个或多个拥有相同tag编号的键值对。这些重复值不必连续，它们可能和其它的域交错在一起。在解析时，元素相对于彼此的顺序保持不变，尽管相对于其它字段的顺序会丢失。在proto3中，重复的字段使用打包编码，你可以阅读下面的内容。
+
+对proto3中的任何一个非重复字段，或是proto2中的`optional`字段，编码后的消息可能有，也可能没有这样一个包含tag编号的键值对。
+
+通常来说，编码的消息永远不会有一个非重复字段的多个示例。然而，真碰到这种情况时我们期望解析器也能够正常处理。对数字类型和字符串，如果同一个字段出现多次，解析器将接受它所看到的最后哪个值。对于嵌套消息字段，解析器会合并同一个字段的的多个实例，就像使用`Message::MergeFrom`方法——所有的歧义字段都会用后一个实例中的字段替换，歧义嵌套消息被合并，并且重复字段会连接起来。这些规则的效果就是，解析两个消息的串联，与你分别解析这两条消息然后合并后的结果完全相同。即：
+
+```C++
+MyMessage message;
+message.ParseFromString(str1 + str2);
+```
+
+等于：
+
+```c++
+MyMessage message, message2;
+message.ParseFromString(str1);
+message2.ParseFromString(str2);
+message.MergeFrom(message2);
+```
+
+这个特性有时候很有用，因为它允许你在完全不知道两个消息的类型时合并它们。
+
+### 打包的repeated字段
+
+2.1.0版本中引入了打包的repeated字段，在proto2中它被声明成带有`[packed=true]`选项的repeated字段。在proto3中，repeated字段默认会被打包。这些功能与repeated字段很类似，但是有不一样的编码规则。编码的消息中不会出现包含零元素的重复字段。否则，所有的元素都被打包成一个wire type为2（长度分隔）的键值对。每个元素都按正常的、相同的方式编码，除了前面没有tag。
+
+例如，想象你有这样一个消息类型：
+
+```protobuf
+message Test4 {
+  repeated int32 d = 4 [packed=true];
+}
+```
+
+现在，假设你构造了一个`Test4`，给repeated字段`d`设值3、270和86942。然后，编码的形式将是：
+
+```protobuf
+22        // tag (field number 4, wire type 2)
+06        // payload size (6 bytes)
+03        // first element (varint 3)
+8E 02     // second element (varint 270)
+9E A7 05  // third element (varint 86942)
+```
 
