@@ -1,6 +1,6 @@
 ---
-title: nginx反向代理（翻译）
-date: 2016-12-11 11:16:27
+title: nginx反向代理
+date: 2017-12-11 11:16:27
 categories: openresty
 tags: [nginx,反向代理]
 ---

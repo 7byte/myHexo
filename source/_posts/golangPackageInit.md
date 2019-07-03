@@ -1,6 +1,6 @@
 ---
 title: golang包初始化
-date: 2017-05-20 17:16:27
+date: 2018-05-20 17:16:27
 categories: golang
 tags: [golang]
 ---

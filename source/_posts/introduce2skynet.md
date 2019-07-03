@@ -1,3 +1,10 @@
+---
+title: 轻量级在线游戏服务器框架skynet
+date: 2019-04-16 11:30:27
+categories: 算法
+tags: []
+---
+
 ## skynet是什么
 
 ![](http://ou1s4jkow.bkt.clouddn.com/skynet.png)

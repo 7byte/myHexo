@@ -1,6 +1,6 @@
 ---
-title: nginx gzip用法
-date: 2016-10-02 15:21:27
+title: nginx gzip
+date: 2017-01-17 15:21:27
 categories: openresty
 tags: [openresty, nginx]
 ---

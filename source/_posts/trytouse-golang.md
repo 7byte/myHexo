@@ -1,6 +1,6 @@
 ---
 title: golang环境搭建
-date: 2016-11-14 14:33:04
+date: 2017-01-14 14:33:04
 categories: golang
 tags: [golang]
 ---

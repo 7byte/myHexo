@@ -78,4 +78,4 @@ disqus_shortname: 7bytegithubio
 ## Docs: https://hexo.io/docs/deployment.html
 deploy: 
   type: git
-  repo: https://github.com/7byte/7byte.github.com.git
+  repo: https://github.com/7byte/7byte.github.io.git

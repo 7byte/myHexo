@@ -1,6 +1,6 @@
 ---
 title: 动态追踪工具——火焰图
-date: 2016-10-02 15:10:27
+date: 2017-01-02 15:10:27
 categories: openresty
 tags: [openresty, nginx, 性能测试, 动态追踪]
 ---
