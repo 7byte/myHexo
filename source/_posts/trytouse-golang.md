@@ -136,9 +136,7 @@ func TestHello(t *testing.T) {
 
 ```
 保存之后可以看到浏览器页面几秒后自动刷新，测试通过效果图：
-<div align=center>
-![](/images/20161207214519.png)
-</div>
+<div align=center><img src="/images/20161207214519.png"></div>
 
 修改TestHello的代码：
 ``` go
@@ -148,9 +146,7 @@ func TestHello(t *testing.T) {
 }
 ```
 再次刷新后测试不通过：
-<div align=center>
-![](/images/20161207220023.png)
-</div>
+<div align=center><img src="/images/20161207220023.png"></div>
 
 ## 配置Sublime Text
 [Sublime Text][6]是一款非常好用的编辑器，自带很多强大的文本编辑功能，并且有丰富的插件扩展，完全可以胜任golang日常实际开发。
@@ -160,9 +156,7 @@ func TestHello(t *testing.T) {
 Sublime的插件一般都是基于Python开发，所以测试机上Python环境是必不可少的。Linux系统默认自带Python，但如果是Windows则需要自己安装。与git安装相同，Python安装过程不在此详细记录。
 
 Python环境搭建完成，然后我们首先需要安装Sublime插件管理器Package Control，借助该工具我们可以非常方便地搜索、安装、更新Sublime上的众多插件。依据官方安装说明的建议，我在这里只贴出原始安装文档页面链接，请到官方页面获取安装代码：https://packagecontrol.io/installation
-<div align=center>
-![](/images/20170113230448.jpg)
-</div>
+<div align=center><img src="/images/20170113230448.jpg"></div>
 
 Package Control安装完成，使用快捷键`ctrl+shift+p`或者打开菜单栏 Preferences > Package Control 调出Package Control对话框，输入`install`，在下拉选项中选择`Package Control: Install Package`，然后输入`GoSublime`，Package Control将会安装对应插件。
 接下来是对GoSublime插件的基本设置，打开菜单栏 Preferences > Package Settings > GoSublime > Settiongs-User 修改用户设置：

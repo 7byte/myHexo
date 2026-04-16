@@ -226,11 +226,7 @@ int inOrderDepth(BST *tree, node *nd, int sp)
 3. nd右子树不为空、左子树为空：修改nd的右子树为nd父节点的右子树；
 4. nd左右子树都不为空：令nd的直接前驱（即nd左子树中最大的节点）或直接后继（即右子树中最小的节点）替代nd，然后再从二叉查找树中删去它的直接前驱（或直接后继）。
 
-<div align=center>
-
-![BST删除一个有左、右子树的节点](/images/bst_delete_node.png)
-
-</div>
+<div align=center><img src="/images/bst_delete_node.png" alt="BST删除一个有左、右子树的节点"></div>
 
 ```c
 int del(BST *tree, void *val)

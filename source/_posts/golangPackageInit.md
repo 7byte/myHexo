@@ -13,7 +13,7 @@ tags: [golang]
 * init函数不能被用户调用或引用；
 * 多个init函数在程序启动时按照声明的顺序（执行main函数之前）自动调用。
 
-<div align=center>![golang初始化顺序](/images/golang_init.png)</div>
+<div align=center><img src="/images/golang_init.png" alt="golang初始化顺序"></div>
 
 （图片来自beego官方文档：https://beego.me/docs/quickstart/router.md ）
 
