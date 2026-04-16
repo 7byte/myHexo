@@ -5,6 +5,9 @@
   "hexo": {
     "version": "7.3.0"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "hexo": "^7.3.0",
     "hexo-deployer-git": "^4.0.0",
